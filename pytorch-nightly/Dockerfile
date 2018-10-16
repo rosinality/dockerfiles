@@ -62,13 +62,13 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ------------------------------------------------------------------
 
     $PIP_INSTALL \
-        torch_nightly -f \
-        https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html \
+        torchvision \
         && \
 
     $PIP_INSTALL \
-        torchvision \
-        && \
+        torch_nightly -f \
+        https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html \
+        && \    
 
 # ==================================================================
 # config & cleanup
