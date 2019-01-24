@@ -43,7 +43,7 @@ RUN $PIP_INSTALL torch torchvision
 
 RUN $PIP_INSTALL sru[cuda]
 
-RUN $GIT_CLNE https://github.com/NVIDIA/apex.git
+RUN $GIT_CLONE https://github.com/NVIDIA/apex.git
 WORKDIR apex
 RUN python3.6 setup.py install --cuda_ext --cpp_ext
 WORKDIR ~
