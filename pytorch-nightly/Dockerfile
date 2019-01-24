@@ -6,76 +6,45 @@
 # ==================================================================
 
 FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
-RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
-    PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
-    GIT_CLONE="git clone --depth 10" && \
 
-    rm -rf /var/lib/apt/lists/* \
+ARG APT_INSTALL="apt-get install -y --no-install-recommends"
+ARG PIP_INSTALL="python -m pip --no-cache-dir install --upgrade"
+ARG GIT_CLONE="git clone --depth 10"
+
+RUN rm -rf /var/lib/apt/lists/* \
            /etc/apt/sources.list.d/cuda.list \
-           /etc/apt/sources.list.d/nvidia-ml.list && \
+           /etc/apt/sources.list.d/nvidia-ml.list
 
-    apt-get update && \
+RUN apt-get update
 
-# ==================================================================
-# tools
-# ------------------------------------------------------------------
+ARG DEBIAN_FRONTEND=noninteractive
 
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        build-essential \
-        ca-certificates \
-        cmake \
-        wget \
-        git \
-        vim \
-        && \
+RUN $APT_INSTALL build-essential ca-certificates cmake wget git vim
 
-# ==================================================================
-# python
-# ------------------------------------------------------------------
+RUN $APT_INSTALL software-properties-common
 
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        software-properties-common \
-        && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get update && \
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        python3.6 \
-        python3.6-dev \
-        && \
-    wget -O ~/get-pip.py \
-        https://bootstrap.pypa.io/get-pip.py && \
-    python3.6 ~/get-pip.py && \
-    ln -s /usr/bin/python3.6 /usr/local/bin/python3 && \
-    ln -s /usr/bin/python3.6 /usr/local/bin/python && \
-    $PIP_INSTALL \
-        setuptools \
-        && \
-    $PIP_INSTALL \
-        numpy \
-        scipy \
-        nltk \
-        lmdb \
-        && \
+RUN add-apt-repository ppa:deadsnakes/ppa
 
-# ==================================================================
-# pytorch
-# ------------------------------------------------------------------
+RUN apt-get update
 
-    $PIP_INSTALL \
-        torch \
-        && \ 
+RUN $APT_INSTALL python3.6 python3.6-dev
 
-    $PIP_INSTALL \
-        torchvision \
-        && \
+RUN wget -O ~/get-pip.py https://bootstrap.pypa.io/get-pip.py
 
-      
+RUN python3.6 ~/get-pip.py
 
-# ==================================================================
-# config & cleanup
-# ------------------------------------------------------------------
+RUN ln -s /usr/bin/python3.6 /usr/local/bin/python3
+RUN ln -s /usr/bin/python3.6 /usr/local/bin/python
 
-    ldconfig && \
-    apt-get clean && \
-    apt-get autoremove && \
-    rm -rf /var/lib/apt/lists/* /tmp/* ~/*
+RUN $PIP_INSTALL setuptools
+RUN $PIP_INSTALL numpy scipy nltk lmdb
+
+RUN $PIP_INSTALL torchvision_nightly
+RUN $PIP_INSTALL torch_nightly -f https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html
+
+RUN $PIP_INSTALL sru[cuda]
+
+RUN ldconfig
+RUN apt-get clean
+RUN apt-get autoremove
+RUN rm -rf /var/lib/apt/lists/* /tmp/* ~/*
