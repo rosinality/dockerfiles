@@ -5,7 +5,7 @@
 # pytorch       latest (pip)
 # ==================================================================
 
-FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
 
 ARG APT_INSTALL="apt-get install -y --no-install-recommends"
 ARG PIP_INSTALL="python -m pip --no-cache-dir install --upgrade"
@@ -39,7 +39,8 @@ RUN ln -s /usr/bin/python3.6 /usr/local/bin/python
 RUN $PIP_INSTALL setuptools
 RUN $PIP_INSTALL numpy scipy nltk lmdb
 
-RUN $PIP_INSTALL torch torchvision
+RUN $PIP_INSTALL https://download.pytorch.org/whl/cu100/torch-1.0.0-cp36-cp36m-linux_x86_64.whl
+RUN $PIP_INSTALL torchvision
 
 RUN $PIP_INSTALL sru[cuda]
 
