@@ -27,26 +27,24 @@ RUN add-apt-repository ppa:deadsnakes/ppa
 
 RUN apt-get update
 
-RUN $APT_INSTALL python3.6 python3.6-dev
+RUN $APT_INSTALL python3.7 python3.7-dev
 
 RUN wget -O ~/get-pip.py https://bootstrap.pypa.io/get-pip.py
 
-RUN python3.6 ~/get-pip.py
+RUN python3.7 ~/get-pip.py
 
-RUN ln -s /usr/bin/python3.6 /usr/local/bin/python3
-RUN ln -s /usr/bin/python3.6 /usr/local/bin/python
+RUN ln -s /usr/bin/python3.7 /usr/local/bin/python3
+RUN ln -s /usr/bin/python3.7 /usr/local/bin/python
 
 RUN $PIP_INSTALL setuptools
 RUN $PIP_INSTALL numpy scipy nltk lmdb
 
-RUN $PIP_INSTALL https://download.pytorch.org/whl/cu100/torch-1.0.0-cp36-cp36m-linux_x86_64.whl
+RUN $PIP_INSTALL https://download.pytorch.org/whl/cu100/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
 RUN $PIP_INSTALL torchvision
-
-RUN $PIP_INSTALL sru[cuda]
 
 RUN $GIT_CLONE https://github.com/NVIDIA/apex.git
 WORKDIR apex
-RUN python3.6 setup.py install --cuda_ext --cpp_ext
+RUN python setup.py install --cuda_ext --cpp_ext
 WORKDIR ~
 
 RUN ldconfig
