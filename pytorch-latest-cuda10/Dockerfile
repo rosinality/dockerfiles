@@ -40,11 +40,11 @@ RUN $PIP_INSTALL setuptools
 RUN $PIP_INSTALL numpy scipy nltk lmdb
 
 RUN $PIP_INSTALL https://download.pytorch.org/whl/cu100/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
-RUN $PIP_INSTALL torchvision
+RUN $PIP_INSTALL https://download.pytorch.org/whl/cu100/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
 
 RUN $GIT_CLONE https://github.com/NVIDIA/apex.git
 WORKDIR apex
-RUN python setup.py install --cuda_ext --cpp_ext
+RUN $PIP_INSTALL -v --global-option="--cpp_ext" --global-option="--cuda_ext" .
 WORKDIR ~
 
 RUN ldconfig
