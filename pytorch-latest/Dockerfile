@@ -43,7 +43,7 @@ RUN $PIP_INSTALL numpy scipy nltk lmdb cython
 
 RUN $PIP_INSTALL torch torchvision
 
-RUN $APT_INSTALL libsm6 libxext6
+RUN $APT_INSTALL libsm6 libxext6 libxrender1
 RUN $PIP_INSTALL opencv-python-headless
 
 RUN $PIP_INSTALL mmcv
@@ -62,7 +62,7 @@ WORKDIR $HOME
 RUN $GIT_CLONE https://github.com/cocodataset/cocoapi.git
 WORKDIR cocoapi/PythonAPI
 RUN make
-RUN $PIP_INSTALL .
+RUN python setup.py build_ext install
 
 WORKDIR $HOME
 
