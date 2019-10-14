@@ -50,7 +50,7 @@ RUN $PIP_INSTALL mmcv
 WORKDIR $HOME
 RUN $GIT_CLONE https://github.com/open-mmlab/mmdetection.git
 WORKDIR mmdetection
-RUN ./compile.sh
+# RUN ./compile.sh
 RUN $PIP_INSTALL .
 
 WORKDIR $HOME
