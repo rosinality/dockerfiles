@@ -5,7 +5,7 @@
 # pytorch       latest (pip)
 # ==================================================================
 
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
 
 ARG APT_INSTALL="apt-get install -y --no-install-recommends"
 ARG PIP_INSTALL="python -m pip --no-cache-dir install --upgrade"
@@ -21,9 +21,7 @@ RUN apt-get update
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN $APT_INSTALL build-essential ca-certificates cmake wget git vim
-
-RUN $APT_INSTALL software-properties-common
+RUN $APT_INSTALL build-essential software-properties-common ca-certificates wget git zlib1g-dev libjpeg-turbo8-dev
 
 RUN add-apt-repository ppa:deadsnakes/ppa
 
@@ -43,15 +41,11 @@ RUN $PIP_INSTALL numpy scipy nltk lmdb cython
 
 RUN $PIP_INSTALL torch torchvision
 
+RUN python -m pip uninstall -y pillow pil jpeg libtiff libjpeg-turbo
+RUN CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall --no-binary :all: --compile pillow-simd
+
 RUN $APT_INSTALL libsm6 libxext6 libxrender1
 RUN $PIP_INSTALL opencv-python-headless
-
-RUN $PIP_INSTALL mmcv
-WORKDIR $HOME
-RUN $GIT_CLONE https://github.com/open-mmlab/mmdetection.git
-WORKDIR mmdetection
-# RUN ./compile.sh
-RUN $PIP_INSTALL .
 
 WORKDIR $HOME
 RUN $GIT_CLONE https://github.com/NVIDIA/apex.git
