@@ -13,6 +13,8 @@ ARG GIT_CLONE="git clone --depth 10"
 
 ENV HOME /root
 
+WORKDIR $HOME
+
 RUN rm -rf /var/lib/apt/lists/* \
            /etc/apt/sources.list.d/cuda.list \
            /etc/apt/sources.list.d/nvidia-ml.list
@@ -21,7 +23,23 @@ RUN apt-get update
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN $APT_INSTALL build-essential software-properties-common ca-certificates wget git zlib1g-dev libjpeg-turbo8-dev
+RUN $APT_INSTALL build-essential software-properties-common ca-certificates \
+                 wget git zlib1g-dev nasm cmake
+
+RUN $GIT_CLONE https://github.com/libjpeg-turbo/libjpeg-turbo.git
+WORKDIR libjpeg-turbo
+RUN mkdir build
+WORKDIR build
+RUN cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=libjpeg-turbo -DWITH_JPEG8=1 ..
+RUN make
+RUN make install
+WORKDIR libjpeg-turbo
+RUN mv include/jerror.h include/jmorecfg.h include/jpeglib.h include/turbojpeg.h /usr/include
+RUN mv include/jconfig.h /usr/include/x86_64-linux-gnu
+RUN mv lib/*.* /usr/lib/x86_64-linux-gnu
+RUN mv lib/pkgconfig/* /usr/lib/x86_64-linux-gnu/pkgconfig
+RUN ldconfig
+WORKDIR HOME
 
 RUN add-apt-repository ppa:deadsnakes/ppa
 
@@ -42,7 +60,7 @@ RUN $PIP_INSTALL numpy scipy nltk lmdb cython
 RUN $PIP_INSTALL torch torchvision
 
 RUN python -m pip uninstall -y pillow pil jpeg libtiff libjpeg-turbo
-RUN CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall --no-binary :all: --compile pillow-simd
+RUN CFLAGS="${CFLAGS} -mavx2" $PIP_INSTALL --force-reinstall --no-binary :all: --compile pillow-simd
 
 RUN $APT_INSTALL libsm6 libxext6 libxrender1
 RUN $PIP_INSTALL opencv-python-headless
