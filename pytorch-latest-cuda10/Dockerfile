@@ -59,6 +59,9 @@ RUN $PIP_INSTALL numpy scipy nltk lmdb cython
 
 RUN $PIP_INSTALL torch torchvision
 
+ENV FORCE_CUDA="1"
+ENV TORCH_CUDA_ARCH_LIST="Pascal;Volta;Turing"
+
 RUN $PIP_INSTALL 'git+https://github.com/facebookresearch/detectron2.git'
 
 RUN python -m pip uninstall -y pillow pil jpeg libtiff libjpeg-turbo
