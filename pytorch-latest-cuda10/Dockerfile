@@ -59,6 +59,8 @@ RUN $PIP_INSTALL numpy scipy nltk lmdb cython
 
 RUN $PIP_INSTALL torch torchvision
 
+RUN $PIP_INSTALL 'git+https://github.com/facebookresearch/detectron2.git'
+
 RUN python -m pip uninstall -y pillow pil jpeg libtiff libjpeg-turbo
 RUN CFLAGS="${CFLAGS} -mavx2" $PIP_INSTALL --force-reinstall --no-binary :all: --compile pillow-simd
 
