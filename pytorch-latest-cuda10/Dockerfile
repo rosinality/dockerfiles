@@ -5,7 +5,7 @@
 # pytorch       latest (pip)
 # ==================================================================
 
-FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 
 ARG APT_INSTALL="apt-get install -y --no-install-recommends"
 ARG PIP_INSTALL="python -m pip --no-cache-dir install --upgrade"
@@ -57,7 +57,7 @@ RUN ln -s /usr/bin/python3.7 /usr/local/bin/python
 RUN $PIP_INSTALL setuptools
 RUN $PIP_INSTALL numpy scipy nltk lmdb cython pydantic pyhocon
 
-RUN $PIP_INSTALL torch torchvision
+RUN $PIP_INSTALL torch==1.5.1+cu101 torchvision==0.6.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 
 ENV FORCE_CUDA="1"
 ENV TORCH_CUDA_ARCH_LIST="Pascal;Volta;Turing"
