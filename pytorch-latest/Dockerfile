@@ -41,6 +41,8 @@ RUN ln -s /usr/bin/python3.7 /usr/local/bin/python
 RUN $PIP_INSTALL setuptools
 RUN $PIP_INSTALL numpy scipy nltk lmdb cython pydantic pyhocon
 
+ENV TORCH_CUDA_ARCH_LIST 6.0 6.1 7.0+PTX
+
 RUN $PIP_INSTALL torch==1.5.1+cu92 torchvision==0.6.1+cu92 -f https://download.pytorch.org/whl/torch_stable.html
 
 RUN $APT_INSTALL libsm6 libxext6 libxrender1
