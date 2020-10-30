@@ -86,7 +86,7 @@ RUN $GIT_CLONE https://github.com/Scalsol/RepPointsV2.git
 WORKDIR RepPointsV2
 RUN python -m pip install -r requirements/build.txt
 RUN python -m pip install "git+https://github.com/open-mmlab/cocoapi.git#subdirectory=pycocotools"
-RUN python -m pip install -v -e .
+RUN python -m pip install -v .
 
 WORKDIR $HOME
 
